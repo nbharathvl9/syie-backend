@@ -54,6 +54,7 @@ app.use(express.json()); // Parses incoming JSON
 // Routes
 app.use('/api/auth', authLimiter, require('./routes/auth')); // Apply stricter limit to auth
 app.use('/api/posts', require('./routes/posts'));
+app.use('/api/stats', require('./routes/stats'));
 
 // Health Check Route
 app.get('/', (req, res) => {
