@@ -3,12 +3,18 @@ const mongoose = require('mongoose');
 const PostSchema = new mongoose.Schema({
   authorRoll: { type: String, ref: 'User', required: true },
   authorName: { type: String, required: true },
-  companyName: { type: String, required: true, index: true },
-  date: { type: Date, default: Date.now },
-  rounds: { type: String },
-  questions: [String],
-  result: { type: String, enum: ['Selected', 'Rejected', 'Waiting'] },
-  experience: { type: String, required: true }
+  companyName: { type: String, required: true },
+  interviewDate: { type: Date, default: Date.now }, 
+  experience: { type: String, required: true },
+  
+  comments: [{
+    authorRoll: String,
+    authorName: String,
+    text: String,
+    createdAt: { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
+
+PostSchema.index({ companyName: 'text' });
 
 module.exports = mongoose.model('Post', PostSchema);

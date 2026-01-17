@@ -13,7 +13,7 @@ connectDB();
 // 3. Middlewares
 // We configure CORS to only trust your frontend URL
 app.use(cors({
-  origin: 'http://localhost:3000', // Change this to your actual frontend URL later
+  origin: 'http://localhost:3000', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
 }));
@@ -26,11 +26,11 @@ app.use('/api/posts', require('./routes/posts'));
 
 // Health Check Route
 app.get('/', (req, res) => {
-  res.send('PlacementFlow API is running... 🚀');
+  res.send('PlacementFlow API is running... ');
 });
 
 // 5. Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
