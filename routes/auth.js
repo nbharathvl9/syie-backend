@@ -188,4 +188,49 @@ router.put('/placement-status', auth, [
   }
 });
 
+// Update Social Links
+router.put('/social-links', auth, [
+  body('github').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid GitHub URL'),
+  body('linkedin').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid LinkedIn URL'),
+  body('leetcode').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid LeetCode URL'),
+  body('codeforces').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid Codeforces URL'),
+  body('email').optional({ checkFalsy: true }).trim().isEmail().withMessage('Invalid email address'),
+  body('portfolio').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid Portfolio URL')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ msg: errors.array()[0].msg });
+  }
+
+  try {
+    const { github, linkedin, leetcode, codeforces, email, portfolio } = req.body;
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Update social links
+    if (!user.socialLinks) {
+      user.socialLinks = {};
+    }
+
+    if (github !== undefined) user.socialLinks.github = github;
+    if (linkedin !== undefined) user.socialLinks.linkedin = linkedin;
+    if (leetcode !== undefined) user.socialLinks.leetcode = leetcode;
+    if (codeforces !== undefined) user.socialLinks.codeforces = codeforces;
+    if (email !== undefined) user.socialLinks.email = email;
+    if (portfolio !== undefined) user.socialLinks.portfolio = portfolio;
+
+    await user.save();
+
+    res.json({
+      socialLinks: user.socialLinks
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

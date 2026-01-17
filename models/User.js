@@ -8,7 +8,16 @@ const UserSchema = new mongoose.Schema({
   isPlaced: { type: Boolean, default: false },
   placedCompany: { type: String, default: '' },
   package: { type: String, default: '' },
-  placedDate: { type: Date }
+  placedDate: { type: Date },
+  // Social Links
+  socialLinks: {
+    github: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    leetcode: { type: String, default: '' },
+    codeforces: { type: String, default: '' },
+    email: { type: String, default: '' },
+    portfolio: { type: String, default: '' }
+  }
 });
 
 module.exports = mongoose.model('User', UserSchema);
