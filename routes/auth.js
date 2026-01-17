@@ -35,7 +35,7 @@ router.post('/register', [
   body('rollNumber')
     .trim()
     .notEmpty().withMessage('Roll number is required')
-    .customSanitizer(value => value.toUpperCase()), // Auto convert to uppercase
+    .customSanitizer(value => value.toLowerCase()), // Auto convert to lowercase to be safe
   body('fullName')
     .trim()
     .notEmpty().withMessage('Full name is required')
@@ -99,7 +99,8 @@ router.post('/login', [
   body('rollNumber')
     .trim()
     .notEmpty().withMessage('Roll number is required')
-    .customSanitizer(value => value.toUpperCase()), // Auto convert to uppercase
+    .notEmpty().withMessage('Roll number is required')
+    .customSanitizer(value => value.toLowerCase()),
   body('password')
     .notEmpty().withMessage('Password is required')
 ], async (req, res) => {
@@ -190,12 +191,12 @@ router.put('/placement-status', auth, [
 
 // Update Social Links
 router.put('/social-links', auth, [
-  body('github').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid GitHub URL'),
-  body('linkedin').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid LinkedIn URL'),
-  body('leetcode').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid LeetCode URL'),
-  body('codeforces').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid Codeforces URL'),
-  body('email').optional({ checkFalsy: true }).trim().isEmail().withMessage('Invalid email address'),
-  body('portfolio').optional({ checkFalsy: true }).trim().isURL().withMessage('Invalid Portfolio URL')
+  body('github').trim().optional({ checkFalsy: true }).isURL().withMessage('Invalid GitHub URL'),
+  body('linkedin').trim().optional({ checkFalsy: true }).isURL().withMessage('Invalid LinkedIn URL'),
+  body('leetcode').trim().optional({ checkFalsy: true }).isURL().withMessage('Invalid LeetCode URL'),
+  body('codeforces').trim().optional({ checkFalsy: true }).isURL().withMessage('Invalid Codeforces URL'),
+  body('email').trim().optional({ checkFalsy: true }).isEmail().withMessage('Invalid email address'),
+  body('portfolio').trim().optional({ checkFalsy: true }).isURL().withMessage('Invalid Portfolio URL')
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -211,10 +212,12 @@ router.put('/social-links', auth, [
     }
 
     // Update social links
+    // Ensure socialLinks object exists
     if (!user.socialLinks) {
       user.socialLinks = {};
     }
 
+    // Explicitly set fields to avoid Issues with partial updates or undefined defaults
     if (github !== undefined) user.socialLinks.github = github;
     if (linkedin !== undefined) user.socialLinks.linkedin = linkedin;
     if (leetcode !== undefined) user.socialLinks.leetcode = leetcode;
@@ -228,8 +231,9 @@ router.put('/social-links', auth, [
       socialLinks: user.socialLinks
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error("Link Update Error:", err.message);
+    // Send specific error message for debugging (in production, we might hide this, but helpful here)
+    res.status(500).json({ msg: `Server Error: ${err.message}` });
   }
 });
 

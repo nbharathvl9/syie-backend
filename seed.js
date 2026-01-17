@@ -24,7 +24,7 @@ const seedData = async () => {
         const users = await User.insertMany([
             {
                 fullName: 'Rahul Sharma',
-                rollNumber: 'CS2026001',
+                rollNumber: 'am.sc.u4cse20001',
                 email: 'rahul@example.com',
                 password: hashedPassword,
                 socialLinks: {
@@ -35,7 +35,7 @@ const seedData = async () => {
             },
             {
                 fullName: 'Priya Patel',
-                rollNumber: 'CS2026002',
+                rollNumber: 'am.sc.u4cse20002',
                 email: 'priya@example.com',
                 password: hashedPassword,
                 socialLinks: {
@@ -45,7 +45,7 @@ const seedData = async () => {
             },
             {
                 fullName: 'Arjun Reddy',
-                rollNumber: 'CS2026003',
+                rollNumber: 'am.sc.u4cse20003',
                 email: 'arjun@example.com',
                 password: hashedPassword,
                 socialLinks: {
@@ -55,13 +55,13 @@ const seedData = async () => {
             },
             {
                 fullName: 'Sneha Gupta',
-                rollNumber: 'CS2026004',
+                rollNumber: 'am.sc.u4cse20004',
                 email: 'sneha@example.com',
                 password: hashedPassword
             },
             {
                 fullName: 'Vikram Singh',
-                rollNumber: 'CS2026005',
+                rollNumber: 'am.sc.u4cse20005',
                 email: 'vikram@example.com',
                 password: hashedPassword
             }
