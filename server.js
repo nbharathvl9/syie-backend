@@ -1,27 +1,58 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config();
 const connectDB = require('./config/db');
+const rateLimit = require('express-rate-limit');
 
-// 1. Load Environment Variables
-dotenv.config();
+// Validate required environment variables
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingEnvVars.length > 0) {
+  console.error(`❌ Missing required environment variables: ${missingEnvVars.join(', ')}`);
+  console.error('Please check your .env file');
+  process.exit(1);
+}
 
-// 2. Initialize Express & Connect DB
 const app = express();
+
+// Connect to MongoDB
 connectDB();
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting to all routes
+app.use(limiter);
+
+// Stricter rate limit for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10, // 10 requests per 15 minutes
+  message: 'Too many login/registration attempts, please try again later.',
+});
+
 
 // 3. Middlewares
 // We configure CORS to only trust your frontend URL
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: 'http://localhost:3000', // Specific origin, not wildcard
+  credentials: true, // Enable credentials (cookies, authorization headers)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
 }));
 app.use(express.json()); // Parses incoming JSON
 
 // 4. Routes
-// These point to the route files we created in previous steps
-app.use('/api/auth', require('./routes/auth'));
+// These point to the route fileapp.use(express.json());
+
+// Routes
+app.use('/api/auth', authLimiter, require('./routes/auth')); // Apply stricter limit to auth
 app.use('/api/posts', require('./routes/posts'));
 
 // Health Check Route

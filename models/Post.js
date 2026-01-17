@@ -4,9 +4,11 @@ const PostSchema = new mongoose.Schema({
   authorRoll: { type: String, ref: 'User', required: true },
   authorName: { type: String, required: true },
   companyName: { type: String, required: true },
-  interviewDate: { type: Date, default: Date.now }, 
+  interviewDate: { type: Date, default: Date.now },
   experience: { type: String, required: true },
-  
+  postType: { type: String, enum: ['Interview', 'Discussion'], default: 'Interview' },
+  result: { type: String, enum: ['Selected', 'Rejected', 'Pending', 'In Progress'], default: 'Pending' },
+
   comments: [{
     authorRoll: String,
     authorName: String,
