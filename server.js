@@ -58,9 +58,20 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/stats', require('./routes/stats'));
 
 // Health Check Route
-app.get('/', (req, res) => {
-  res.send('PlacementFlow API is running... ');
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
 });
+
+// Self-ping to keep alive
+const keepAliveInterval = 14 * 60 * 1000; // 14 minutes
+setInterval(() => {
+  const http = require('http');
+  http.get(`http://localhost:${PORT}/health`, (res) => {
+    console.log(`Health check triggered: Status ${res.statusCode}`);
+  }).on('error', (err) => {
+    console.error('Health check failed:', err.message);
+  });
+}, keepAliveInterval);
 
 // 5. Start Server
 const PORT = process.env.PORT || 5000;
