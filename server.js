@@ -41,7 +41,7 @@ const authLimiter = rateLimit({
 // 3. Middlewares
 // We configure CORS to only trust your frontend URL
 app.use(cors({
-  origin: 'https://syie-frontend.vercel.app/', // Specific origin, not wildcard
+  origin: 'https://placementflow.vercel.app/', // Specific origin, not wildcard
   credentials: true, // Enable credentials (cookies, authorization headers)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
