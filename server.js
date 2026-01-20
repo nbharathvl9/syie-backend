@@ -41,7 +41,7 @@ const authLimiter = rateLimit({
 // 3. Middlewares
 // We configure CORS to only trust your frontend URL
 app.use(cors({
-  origin: ['https://placementflow.vercel.app', 'http://localhost:3000'], // Allow both production and local development
+  origin: ['https://placementsflow.vercel.app', 'http://localhost:3000'], // Allow both production and local development
   credentials: true, // Enable credentials (cookies, authorization headers)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
